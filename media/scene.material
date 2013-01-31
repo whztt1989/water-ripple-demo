@@ -1,0 +1,30 @@
+material ground
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture BeachStones.jpg
+			}
+		}
+	}
+}
+
+material water
+{
+	technique
+	{
+		pass
+		{
+			scene_blend alpha_blend
+			depth_write off
+			texture_unit
+			{
+				texture Water02.jpg
+				alpha_op_ex source1 src_manual src_current 0.7
+			}
+		}
+	}
+}
