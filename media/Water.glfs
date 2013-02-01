@@ -3,10 +3,11 @@ uniform sampler2D normalSampler;
 uniform samplerCube cubeSampler;
 uniform vec3 cameraPos;
 uniform vec3 rippleCenter;
+uniform float rippleAreaLength;
 
 void main()
 {
-	vec2 relPos = (gl_TexCoord[2].xz - rippleCenter.xy) / 100.0 + 0.5;
+	vec2 relPos = (gl_TexCoord[2].xz - rippleCenter.xy) / rippleAreaLength + 0.5;
 
 	vec3 normal = normalize(texture2D(normalSampler, relPos.xy).xyz * 2 - 1);
 	normal = normal.xzy;

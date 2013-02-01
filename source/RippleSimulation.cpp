@@ -11,7 +11,10 @@ RippleSimulation::RippleSimulation(Ogre::SceneManager* mainSceneManager)
       mTime(0),
       mCurrentFrameOffset(0,0),
       mPreviousFrameOffset(0,0),
-      mRippleCenter(0,0)
+      mRippleCenter(0,0),
+      mTextureSize(512),
+      mRippleAreaLength(100),
+      mImpulseSize(2.0)
 {
     Ogre::AxisAlignedBox aabInf;
     aabInf.setInfinite();
@@ -43,10 +46,10 @@ RippleSimulation::RippleSimulation(Ogre::SceneManager* mainSceneManager)
         Ogre::TexturePtr texture;
         if (i != 3)
             texture = Ogre::TextureManager::getSingleton().createManual("RippleHeight" + Ogre::StringConverter::toString(i),
-                Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::TEX_TYPE_2D, 512, 512, 1, 0, Ogre::PF_R8G8B8, Ogre::TU_RENDERTARGET);
+                Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::TEX_TYPE_2D, mTextureSize, mTextureSize, 1, 0, Ogre::PF_R8G8B8, Ogre::TU_RENDERTARGET);
         else
             texture = Ogre::TextureManager::getSingleton().createManual("RippleNormal",
-                Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::TEX_TYPE_2D, 512, 512, 1, 0, Ogre::PF_R8G8B8, Ogre::TU_RENDERTARGET);
+                Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::TEX_TYPE_2D, mTextureSize, mTextureSize, 1, 0, Ogre::PF_R8G8B8, Ogre::TU_RENDERTARGET);
 
 
         Ogre::RenderTexture* rt = texture->getBuffer()->getRenderTarget();
@@ -96,7 +99,7 @@ void RippleSimulation::update(float dt, Ogre::Vector2 position)
         mPreviousFrameOffset = mCurrentFrameOffset;
         mCurrentFrameOffset = position - mRippleCenter;
         // texture coordinate space
-        mCurrentFrameOffset /= 100.0;
+        mCurrentFrameOffset /= mRippleAreaLength;
 
         mRippleCenter = position;
 
@@ -112,6 +115,8 @@ void RippleSimulation::update(float dt, Ogre::Vector2 position)
     mtr->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureName("RippleNormal");
     mtr->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant(
                 "rippleCenter", Ogre::Vector3(mRippleCenter.x, mRippleCenter.y, 0));
+    mtr->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant(
+                "rippleAreaLength", Ogre::Real(mRippleAreaLength));
 }
 
 void RippleSimulation::addImpulse(Ogre::Vector2 position)
@@ -128,8 +133,9 @@ void RippleSimulation::addImpulses()
     {
         Ogre::Vector2 pos = mImpulses.front();
         pos -= mRippleCenter;
-        pos /= 100.0;
-        mImpulse->setCorners(pos.x-0.02, pos.y+0.02, pos.x+0.02, pos.y-0.02, false);
+        pos /= mRippleAreaLength;
+        float size = mImpulseSize / mRippleAreaLength;
+        mImpulse->setCorners(pos.x-size, pos.y+size, pos.x+size, pos.y-size, false);
         mImpulses.pop();
 
         mRenderTargets[1]->update();

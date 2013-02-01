@@ -27,6 +27,10 @@ private:
     Ogre::RenderTexture* mRenderTargets[4];
     Ogre::TexturePtr mTextures[4];
 
+    int mTextureSize;
+    float mRippleAreaLength;
+    float mImpulseSize;
+
     Ogre::Camera* mCamera;
 
     // own scenemanager to render our simulation
