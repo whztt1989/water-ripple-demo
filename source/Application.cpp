@@ -13,6 +13,7 @@
 using namespace Ogre;
 
 Application::Application()
+    : mRipplesEnabled(true)
 {
 	
 }
@@ -73,11 +74,16 @@ bool Application::frameRenderingQueued(const Ogre::FrameEvent& evt)
 
     mCharacterController->addTime (evt.timeSinceLastFrame);
 
-    Ogre::Vector3 pos = mCharacterController->getPosition();
-    Ogre::Vector2 pos2d (pos.x, pos.z);
+    if (mRipplesEnabled)
+    {
+        Ogre::Vector3 pos = mCharacterController->getPosition();
+        Ogre::Vector2 pos2d (pos.x, pos.z);
 
-    mRippleSimulation->addImpulse(pos2d);
-    mRippleSimulation->update(evt.timeSinceLastFrame, pos2d);
+        mRippleSimulation->addImpulse(pos2d);
+        mRippleSimulation->update(evt.timeSinceLastFrame, pos2d);
+    }
+
+    std::cout << "FPS: " << mWindow->getLastFPS() << std::endl;
 
 	return !mShutdown;
 }
@@ -109,6 +115,8 @@ bool Application::keyPressed(const OIS::KeyEvent& event)
 		mShutdown = true;
     if (event.key == OIS::KC_F)
         mWindow->writeContentsToTimestampedFile("Screenshot", ".png");
+    if (event.key == OIS::KC_R)
+        mRipplesEnabled = !mRipplesEnabled;
 	return true;
 }
 

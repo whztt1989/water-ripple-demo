@@ -36,4 +36,6 @@ protected:
 	virtual bool mouseReleased(const OIS::MouseEvent&, OIS::MouseButtonID);
 	virtual bool keyPressed(const OIS::KeyEvent&);
 	virtual bool keyReleased(const OIS::KeyEvent&);
+
+    bool mRipplesEnabled;
 };
