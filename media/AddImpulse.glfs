@@ -3,6 +3,18 @@
 uniform vec4 vForce;
 uniform sampler2D alphaMap;
 
+float DecodeHeightmap(vec4 heightmap)
+{
+	vec4 table = vec4(1.0, -1.0, 0.0, 0.0);
+	return dot(heightmap, table);
+}
+
+float DecodeHeightmap(sampler2D HeightmapSampler, vec2 texcoord)
+{
+	vec4 heightmap = texture2D(HeightmapSampler, texcoord);
+	return DecodeHeightmap(heightmap);
+}
+
 vec4 EncodeHeightmap(float fHeight)
 {
 	float h = fHeight;
@@ -13,10 +25,7 @@ vec4 EncodeHeightmap(float fHeight)
 
 	color.r = positive;
 	color.g = negative;
-	
-	color.ba = fract(color.rg*256);
-	color.rg -= color.ba/256.0;
-	
+		
 	return color;
 }
 

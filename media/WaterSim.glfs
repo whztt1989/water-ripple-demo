@@ -2,7 +2,7 @@
 
 float DecodeHeightmap(vec4 heightmap)
 {
-	vec4 table = vec4(1.0, -1.0, 1.0/256.0, -1.0/256.0);
+	vec4 table = vec4(1.0, -1.0, 0.0, 0.0);
 	return dot(heightmap, table);
 }
 
@@ -22,10 +22,7 @@ vec4 EncodeHeightmap(float fHeight)
 
 	color.r = positive;
 	color.g = negative;
-	
-	color.ba = fract(color.rg*256);
-	color.rg -= color.ba/256.0;
-	
+		
 	return color;
 }
 
