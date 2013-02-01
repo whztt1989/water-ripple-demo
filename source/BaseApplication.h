@@ -32,6 +32,7 @@ protected:
 	Ogre::RenderWindow* mWindow;
 
 	virtual void createScene() = 0;
+    virtual void destroyScene() = 0;
 		
 	virtual bool mouseMoved(const OIS::MouseEvent&) = 0;
 	virtual bool mousePressed(const OIS::MouseEvent&, OIS::MouseButtonID) = 0;

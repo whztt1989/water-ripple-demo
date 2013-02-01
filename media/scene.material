@@ -12,18 +12,162 @@ material ground
 	}
 }
 
+vertex_program transform_vp glsl
+{
+	source Transform.glvs
+}
+
+vertex_program water_vp glsl
+{
+	source Water.glvs
+	
+	default_params
+	{
+		param_named_auto wMat world_matrix
+	}
+}
+
+
+fragment_program water_fp glsl
+{
+	source Water.glfs
+	
+	default_params
+	{
+		param_named normalSampler int 0
+		param_named cubeSampler int 1
+		param_named_auto cameraPos camera_position_object_space
+	}
+}
+
 material water
 {
 	technique
 	{
 		pass
 		{
+			vertex_program_ref water_vp
+			{
+			}
+			fragment_program_ref water_fp
+			{
+			}
+		
 			scene_blend alpha_blend
 			depth_write off
 			texture_unit
 			{
-				texture Water02.jpg
-				alpha_op_ex source1 src_manual src_current 0.7
+				tex_address_mode border
+				tex_border_colour 0.5 0.5 1.0
+			}
+			texture_unit
+			{
+				cubic_texture cubescene.jpg combinedUVW 
+			}
+		}
+	}
+}
+
+fragment_program watersim_fp glsl
+{
+	source WaterSim.glfs
+	
+	default_params
+	{
+		param_named HeightPrevSampler int 0
+		param_named HeightCurrentSampler int 1
+	}
+}
+
+material HeightmapSimulation
+{
+	technique
+	{
+		pass
+		{
+			depth_check off
+			depth_write off
+			vertex_program_ref transform_vp
+			{
+			}
+			fragment_program_ref watersim_fp
+			{
+			}
+			
+			texture_unit
+			{
+				tex_address_mode border
+				tex_border_colour 0 0 0
+			}
+			texture_unit
+			{
+				tex_address_mode border
+				tex_border_colour 0 0 0
+			}
+		}
+	}
+}
+
+fragment_program height_to_normal_fp glsl
+{
+	source HeightToNormal.glfs
+	default_params
+	{
+		param_named HeightCurrentSampler int 0
+	}
+}
+
+material HeightToNormalMap
+{
+	technique
+	{
+		pass
+		{
+			depth_check off
+			depth_write off
+			vertex_program_ref transform_vp
+			{
+			}
+			fragment_program_ref height_to_normal_fp
+			{
+			}
+			
+			texture_unit
+			{
+			}
+		}
+	}
+}
+
+fragment_program add_impulse_fp glsl
+{
+	source AddImpulse.glfs
+	default_params
+	{
+		param_named vForce float4 0.1 0.1 0.1 0.1
+		param_named alphaMap int 0
+	}
+}
+
+material AddImpulse
+{
+	technique
+	{
+		pass
+		{
+			depth_check off
+			depth_write off
+			scene_blend alpha_blend
+			vertex_program_ref transform_vp
+			{
+			}
+			fragment_program_ref add_impulse_fp
+			{
+			}
+			
+			texture_unit
+			{
+				texture circle.png
 			}
 		}
 	}

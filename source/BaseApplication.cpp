@@ -77,6 +77,7 @@ void BaseApplication::run()
 	mRoot->startRendering();
 	
 	// Shutdown
+    destroyScene();
 	if (mOISMouse)
 		mOIS->destroyInputObject(mOISMouse);
 	if (mOISKeyboard)

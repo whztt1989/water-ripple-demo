@@ -40,6 +40,11 @@ private:
 	};
 
 public:
+
+    Vector3 getPosition()
+    {
+        return mBodyNode->_getDerivedPosition();
+    }
 	
 	SinbadCharacterController(Camera* cam)
 	{
@@ -173,7 +178,7 @@ private:
 		mBodyEnt->attachObjectToBone("Sheath.R", mSword2);
 
 		LogManager::getSingleton().logMessage("Creating the chains");
-		// create a couple of ribbon trails for the swords, just for fun
+        // create a couple of ribbon trails for the swords, just for fun
 		NameValuePairList params;
 		params["numberOfChains"] = "2";
 		params["maxElements"] = "80";
@@ -181,7 +186,7 @@ private:
 		mSwordTrail->setMaterialName("Examples/LightRibbonTrail");
 		mSwordTrail->setTrailLength(20);
 		mSwordTrail->setVisible(false);
-		sceneMgr->getRootSceneNode()->attachObject(mSwordTrail);
+        //sceneMgr->getRootSceneNode()->attachObject(mSwordTrail);
 
 
 		for (int i = 0; i < 2; i++)
@@ -190,7 +195,7 @@ private:
 			mSwordTrail->setColourChange(i, 0.75, 1.25, 1.25, 1.25);
 			mSwordTrail->setWidthChange(i, 1);
 			mSwordTrail->setInitialWidth(i, 0.5);
-		}
+        }
 
 		mKeyDirection = Vector3::ZERO;
 		mVerticalVelocity = 0;

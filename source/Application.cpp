@@ -7,6 +7,8 @@
 #include <OgreRenderWindow.h>
 #include <OgreColourValue.h>
 
+#include "RippleSimulation.h"
+
 
 using namespace Ogre;
 
@@ -25,6 +27,7 @@ void Application::createScene()
 {
     Ogre::ResourceGroupManager::getSingleton ().addResourceLocation ("../media", "FileSystem");
     Ogre::ResourceGroupManager::getSingleton ().addResourceLocation ("../media/Sinbad.zip", "Zip");
+    Ogre::ResourceGroupManager::getSingleton ().addResourceLocation ("../media/cubemap.zip", "Zip");
     Ogre::ResourceGroupManager::getSingleton ().initialiseAllResourceGroups ();
 
 	mSceneMgr = Root::getSingleton().createSceneManager(ST_GENERIC);
@@ -38,22 +41,29 @@ void Application::createScene()
 	mViewport = mWindow->addViewport(mCamera);
 	mViewport->setBackgroundColour(ColourValue(0.2, 0.2, 0.2, 1.0));
 
+    mRippleSimulation = new RippleSimulation(mSceneMgr);
+
     // Create the ground
     MeshManager::getSingleton().createPlane("ground", ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,  Ogre::Plane(Ogre::Vector3(0,1,0), 0),
-        1000, 1000, 1, 1, true, 1, 10,10, Vector3::UNIT_Z);
+        5000, 5000, 1, 1, true, 1, 1000,1000, Vector3::UNIT_Z);
     Ogre::Entity* groundEntity = mSceneMgr->createEntity("ground");
     groundEntity->setMaterialName ("ground");
     Ogre::SceneNode* groundNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
     groundNode->attachObject(groundEntity);
 
     // Create the water
-    MeshManager::getSingleton().createPlane("water", ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,  Ogre::Plane(Ogre::Vector3(0,1,0), 1),
-        1000, 1000, 1, 1, true, 1, 10,10, Vector3::UNIT_Z);
+    MeshManager::getSingleton().createPlane("water", ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,  Ogre::Plane(Ogre::Vector3(0,1,0), 2.5),
+        5000, 5000, 1, 1, true, 1, 100,100, Vector3::UNIT_Z);
     Ogre::Entity* waterEntity = mSceneMgr->createEntity("water");
     waterEntity->setMaterialName ("water");
     Ogre::SceneNode* waterNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
     waterNode->attachObject(waterEntity);
 
+}
+
+void Application::destroyScene()
+{
+    delete mRippleSimulation;
 }
 
 bool Application::frameRenderingQueued(const Ogre::FrameEvent& evt)
@@ -62,6 +72,12 @@ bool Application::frameRenderingQueued(const Ogre::FrameEvent& evt)
     mOISMouse->capture();
 
     mCharacterController->addTime (evt.timeSinceLastFrame);
+
+    Ogre::Vector3 pos = mCharacterController->getPosition();
+    Ogre::Vector2 pos2d (pos.x, pos.z);
+
+    mRippleSimulation->addImpulse(pos2d);
+    mRippleSimulation->update(evt.timeSinceLastFrame, pos2d);
 
 	return !mShutdown;
 }
@@ -91,6 +107,8 @@ bool Application::keyPressed(const OIS::KeyEvent& event)
 
     if (event.key == OIS::KC_ESCAPE)
 		mShutdown = true;
+    if (event.key == OIS::KC_F)
+        mWindow->writeContentsToTimestampedFile("Screenshot", ".png");
 	return true;
 }
 

@@ -1,0 +1,27 @@
+#version 120
+
+uniform vec4 vForce;
+uniform sampler2D alphaMap;
+
+vec4 EncodeHeightmap(float fHeight)
+{
+	float h = fHeight;
+	float positive = fHeight > 0.0 ? fHeight : 0.0;
+	float negative = fHeight < 0.0 ? -fHeight : 0.0;
+
+	vec4 color = vec4(0,0,0,0);
+
+	color.r = positive;
+	color.g = negative;
+	
+	color.ba = fract(color.rg*256);
+	color.rg -= color.ba/256.0;
+	
+	return color;
+}
+
+void main(void)
+{
+	gl_FragColor = EncodeHeightmap(1.0);
+	gl_FragColor.a = texture2D (alphaMap, gl_TexCoord[0].xy).a;
+}

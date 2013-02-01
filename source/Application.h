@@ -2,8 +2,14 @@
 
 #include "SinbadCharacterController.h"
 
+class RippleSimulation;
 
-namespace Ogre { class SceneManager; class Viewport; class Camera; }
+namespace Ogre
+{
+    class SceneManager;
+    class Viewport;
+    class Camera;
+}
 
 class Application : public BaseApplication
 {
@@ -13,12 +19,15 @@ public:
 	
 protected:
 	virtual void createScene();
+    virtual void destroyScene();
 
 	virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
 	
 	Ogre::SceneManager* mSceneMgr;
 	Ogre::Viewport* mViewport;
 	Ogre::Camera* mCamera;
+
+    RippleSimulation* mRippleSimulation;
 
     SinbadCharacterController* mCharacterController;
 
