@@ -5,7 +5,6 @@
 #include <OgreHardwarePixelBuffer.h>
 #include <OgreRoot.h>
 
-#include <boost/thread.hpp>
 RippleSimulation::RippleSimulation(Ogre::SceneManager* mainSceneManager)
     : mMainSceneMgr(mainSceneManager),
       mTime(0),

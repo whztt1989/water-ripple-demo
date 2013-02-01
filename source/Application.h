@@ -38,4 +38,6 @@ protected:
 	virtual bool keyReleased(const OIS::KeyEvent&);
 
     bool mRipplesEnabled;
+
+    Ogre::Vector2 mLastPos;
 };

@@ -14,6 +14,7 @@ using namespace Ogre;
 
 Application::Application()
     : mRipplesEnabled(true)
+    , mLastPos(0,0)
 {
 	
 }
@@ -79,7 +80,10 @@ bool Application::frameRenderingQueued(const Ogre::FrameEvent& evt)
         Ogre::Vector3 pos = mCharacterController->getPosition();
         Ogre::Vector2 pos2d (pos.x, pos.z);
 
-        mRippleSimulation->addImpulse(pos2d);
+        if (mLastPos != pos2d)
+            mRippleSimulation->addImpulse(pos2d);
+
+        mLastPos = pos2d;
         mRippleSimulation->update(evt.timeSinceLastFrame, pos2d);
     }
 
