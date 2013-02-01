@@ -58,6 +58,8 @@ private:
 
     Ogre::Vector2 mRippleCenter;
 
+    Ogre::Vector2 mTexelOffset;
+
     Ogre::Vector2 mCurrentFrameOffset;
     Ogre::Vector2 mPreviousFrameOffset;
 };

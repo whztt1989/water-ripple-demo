@@ -37,7 +37,7 @@ uniform vec3 currentFrameOffset;
 
 uniform vec4  vTextureSize;
 
-#define DAMPING 0.9
+#define DAMPING 0.92
 
 void main()
 {

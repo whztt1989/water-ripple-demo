@@ -14,7 +14,8 @@ RippleSimulation::RippleSimulation(Ogre::SceneManager* mainSceneManager)
       mRippleCenter(0,0),
       mTextureSize(512),
       mRippleAreaLength(100),
-      mImpulseSize(2.0)
+      mImpulseSize(2.0),
+      mTexelOffset(0,0)
 {
     Ogre::AxisAlignedBox aabInf;
     aabInf.setInfinite();
@@ -97,7 +98,17 @@ void RippleSimulation::update(float dt, Ogre::Vector2 position)
     while (mTime >= 1/20.0)
     {
         mPreviousFrameOffset = mCurrentFrameOffset;
+
         mCurrentFrameOffset = position - mRippleCenter;
+        // add texel offsets from previous frame.
+        mCurrentFrameOffset += mTexelOffset;
+
+        mTexelOffset = Ogre::Vector2(std::fmod(mCurrentFrameOffset.x, 1.0f/mTextureSize),
+                                          std::fmod(mCurrentFrameOffset.y, 1.0f/mTextureSize));
+
+        // now subtract new offset in order to snap to texels
+        mCurrentFrameOffset -= mTexelOffset;
+
         // texture coordinate space
         mCurrentFrameOffset /= mRippleAreaLength;
 
@@ -114,7 +125,7 @@ void RippleSimulation::update(float dt, Ogre::Vector2 position)
     Ogre::MaterialPtr mtr = Ogre::MaterialManager::getSingleton().getByName("water");
     mtr->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureName("RippleNormal");
     mtr->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant(
-                "rippleCenter", Ogre::Vector3(mRippleCenter.x, mRippleCenter.y, 0));
+                "rippleCenter", Ogre::Vector3(mRippleCenter.x + mTexelOffset.x, mRippleCenter.y + mTexelOffset.y, 0));
     mtr->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant(
                 "rippleAreaLength", Ogre::Real(mRippleAreaLength));
 }
