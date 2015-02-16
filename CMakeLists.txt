@@ -24,8 +24,8 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 
 # Add the libraries
 
-# Boost
-find_package(Boost COMPONENTS system thread filesystem REQUIRED) # Specify the required components
+# Boost (not actually used, but Ogre requires it)
+find_package(Boost COMPONENTS system REQUIRED) # Specify the required components
 include_directories(${Boost_INCLUDE_DIRS})
 link_directories(${Boost_LIBRARY_DIRS})
 list(APPEND LIBS ${Boost_LIBRARIES})
@@ -35,33 +35,11 @@ find_package(OGRE REQUIRED)
 link_directories(${OGRE_LIBRARY_DIRS})
 include_directories(${OGRE_INCLUDE_DIRS})
 list(APPEND LIBS ${OGRE_LIBRARIES})
-# Specify optional components here
-#foreach(component Terrain Paging RTShaderSystem) 
-#	include_directories(${OGRE_${component}_INCLUDE_DIRS})
-#	list(APPEND LIBS  ${OGRE_${component}_LIBRARIES})
-#endforeach()
 
 add_definitions(-DOGRE_PLUGIN_DIR_REL="${OGRE_PLUGIN_DIR_REL}")
 add_definitions(-DOGRE_PLUGIN_DIR_DBG="${OGRE_PLUGIN_DIR_DBG}")
 
-# Bullet (defaults to add all libraries - edit the find script cmake/FindBullet.cmake to specify the libraries you need)
-#find_package(Bullet REQUIRED)
-#include_directories(${BULLET_INCLUDE_DIRS})
-#list(APPEND LIBS ${BULLET_LIBRARIES})
-
-# MyGUI
-#find_package(MyGUI REQUIRED)
-#include_directories(${MYGUI_INCLUDE_DIRS})
-#include_directories(${MYGUI_PLATFORM_INCLUDE_DIRS})
-#link_directories(${MYGUI_LIB_DIR})
-#IF(MSVC)
-#	list(APPEND LIBS ${MYGUI_LIBRARIES} ${MYGUI_PLATFORM_LIBRARIES})
-#ELSE(MSVC)
-#	list(APPEND LIBS ${MYGUI_LIBRARIES} MyGUI.OgrePlatform) #TODO: MyGUI.OgrePlatform is not added by the find script
-#ENDIF(MSVC)
-
 # Simple libraries (without optional components) added in a loop
-#foreach(lib  OIS SDL OGG VorbisFile)
 foreach(lib  OIS)
 	find_package(${lib} REQUIRED)
 	include_directories(${${lib}_INCLUDE_DIRS})
