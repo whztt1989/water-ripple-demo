@@ -1,4 +1,3 @@
-# water_ripple_demo
 Dynamic water ripple effect in Ogre3D/GLSL, based on demo http://cmlab.csie.ntu.edu.tw/~perng/3D/
 
 Build dependencies:
