@@ -33,6 +33,7 @@ void Application::createScene()
     Ogre::ResourceGroupManager::getSingleton ().initialiseAllResourceGroups ();
 
 	mSceneMgr = Root::getSingleton().createSceneManager(ST_GENERIC);
+	mSceneMgr->setAmbientLight(Ogre::ColourValue(1.f,1.f,1.f));
 	
 	mCamera = mSceneMgr->createCamera("Camera");
     mCamera->setNearClipDistance (0.05);
